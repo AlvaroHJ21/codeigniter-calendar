@@ -5,10 +5,11 @@ $(document).ready(function () {
   const btnSave = $('#btn-save');
   const btnNext = $('#btn-next');
   const btnPrev = $('#btn-prev');
+  const btnCurrent = $('#btn-current');
 
   const table = new Table('#table-records');
 
-  table.load();
+  table.loadData();
 
   btnAddRow.on('click', function () {
     table.addRow();
@@ -24,5 +25,9 @@ $(document).ready(function () {
 
   btnPrev.on('click', function () {
     table.loadPrev();
+  });
+
+  btnCurrent.on('click', function () {
+    table.backCurrentWeek();
   });
 });

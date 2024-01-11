@@ -81,6 +81,31 @@ export function getFormatDateText(date) {
   return result;
 }
 
+export function getMonthName(date) {
+  const newDate = new Date(date);
+
+  // Meses del año en español
+  const months = [
+    'Enero',
+    'Febrero',
+    'Marzo',
+    'Abril',
+    'Mayo',
+    'Junio',
+    'Julio',
+    'Augosto',
+    'Septiembre',
+    'Octubre',
+    'Noviembre',
+    'Diciembre',
+  ];
+
+  // Obtener el nombre del mes
+  const monthName = months[newDate.getMonth()];
+
+  return monthName;
+}
+
 export function isEqualDate(date1, date2) {
   const d1 = new Date(date1);
   const d2 = new Date(date2);

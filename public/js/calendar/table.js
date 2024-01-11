@@ -1,7 +1,9 @@
 import {
   getDaysOfWeekByFirstDay,
   getFirstDate,
+  getFirstDayOfCurrentWeek,
   getFormatDateText,
+  getMonthName,
   isEqualDate,
   saveFirstDate,
 } from './helpers.js';
@@ -28,7 +30,7 @@ export class Table {
     });
   }
 
-  async load() {
+  async loadData() {
     const records = await getRecords(this.startDate);
 
     saveFirstDate(this.startDate);
@@ -61,17 +63,13 @@ export class Table {
     this.render();
   }
 
-  loadDates(dates) {
-    this.dates = dates;
-  }
-
   loadNext() {
     const lastCurrentDay = new Date(this.dates[this.dates.length - 1]);
     const nextFirstDay = lastCurrentDay.setDate(lastCurrentDay.getDate() + 1);
 
     this.dates = getDaysOfWeekByFirstDay(nextFirstDay);
     this.startDate = this.dates[0];
-    this.load();
+    this.loadData();
   }
 
   loadPrev() {
@@ -80,7 +78,7 @@ export class Table {
 
     this.dates = getDaysOfWeekByFirstDay(prevFirstDay);
     this.startDate = this.dates[0];
-    this.load();
+    this.loadData();
   }
 
   addRow() {
@@ -94,10 +92,7 @@ export class Table {
     this.data.forEach((row) => {
       row.forEach((cell) => {
         //validar si el objeto tiene el campo project_id
-
         if (!cell.hasOwnProperty('project_id')) return;
-
-        // if (!cell.project_id || !cell.hours) return;
 
         dataToSave.push({
           id: cell.id,
@@ -112,7 +107,11 @@ export class Table {
     saveRecords(dataToSave);
   }
 
-  onChange() {}
+  backCurrentWeek() {
+    this.startDate = getFirstDayOfCurrentWeek();
+    this.dates = getDaysOfWeekByFirstDay(this.startDate);
+    this.loadData();
+  }
 
   calcTotals() {
     this.totals = this.dates.map((date) => {
@@ -128,18 +127,23 @@ export class Table {
 
       return total;
     });
-
-    console.log(this.totals);
   }
 
   render() {
+    this.renderData();
+
+    this.renderTotals();
+
+    this.renderSubtitle();
+  }
+
+  renderData() {
     const head = this.target.querySelector('thead');
     const body = this.target.querySelector('tbody');
 
     body.innerHTML = '';
 
     // headers
-
     head.innerHTML = `
       <tr>
         ${this.dates
@@ -150,8 +154,7 @@ export class Table {
       </tr>
     `;
 
-    // data
-
+    // body
     this.data.forEach((row, rowIdx) => {
       let tr = document.createElement('tr');
       row.forEach((cell, colIdx) => {
@@ -164,7 +167,7 @@ export class Table {
           <div class="">
             <select 
               class="form-control" 
-              style="min-width:120px" 
+              style="min-width:160px" 
               value="${projectId}" 
               data-col="${colIdx}" 
               data-row="${rowIdx}"
@@ -174,7 +177,7 @@ export class Table {
               ${this.projects.map((project) => {
                 return `<option value="${project.id}" ${
                   project.id == projectId ? 'selected' : ''
-                }>${project.name}</option>`;
+                }>${project.code}-${project.name}</option>`;
               })}
 
             </select>
@@ -208,8 +211,6 @@ export class Table {
           const row = e.target.dataset.row;
 
           this.data[row][col].hours = value;
-
-          // console.log(this.data);
         });
       });
 
@@ -220,22 +221,32 @@ export class Table {
           const col = e.target.dataset.col;
 
           this.data[row][col].project_id = value;
-
-          console.log(this.data);
         });
       });
     });
+  }
 
-    // totals
-
+  renderTotals() {
+    const body = this.target.querySelector('tbody');
     let tr = document.createElement('tr');
     tr.innerHTML = `
       ${this.totals
         .map((total) => {
-          return `<td class="text-end">${total} Horas</td>`;
+          return `<td class="text-end fw-bold">${total} Horas</td>`;
         })
         .join('')}
     `;
     body.appendChild(tr);
+  }
+
+  renderSubtitle() {
+    //subtitle
+    const subtitle = document.querySelector('#subtitle');
+    const firstDate = new Date(this.dates[0]);
+    const lastDate = new Date(this.dates[this.dates.length - 1]);
+    const month = getMonthName(lastDate);
+
+    //Semana del 8 al 14 de Enero, 2024
+    subtitle.innerHTML = `Semana del ${firstDate.getDate()} al ${lastDate.getDate()} de ${month}, ${lastDate.getFullYear()}`;
   }
 }

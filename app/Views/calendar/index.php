@@ -18,18 +18,19 @@
 
 <body>
 
-  <section class="container mt-4">
+  <section class="container">
 
-    <div class="d-flex justify-content-between">
-      <button id="btn-prev" class="btn btn-primary">
+    <div class="d-flex justify-content-between mt-4 mb-4">
+      <button id="btn-prev" class="btn">
         <i class="fa fa-chevron-left"></i>
       </button>
-      <h2>Calendar</h2>
-      <button id="btn-next" class="btn btn-primary">
+      <div class="text-center">
+        <h2>Horarios</h2>
+        <p id="subtitle"></p>
+      </div>
+      <button id="btn-next" class="btn">
         <i class="fa fa-chevron-right"></i>
       </button>
-
-
     </div>
 
     <div class="" style="overflow-y: auto;">
@@ -41,8 +42,15 @@
       </table>
     </div>
 
-    <button id="btn-add-row" class="btn btn-primary">Agregar</button>
-    <button id="btn-save" class="btn btn-success">Guardar</button>
+    <div class="d-flex mt-2 gap-2">
+      <button id="btn-add-row" class="btn btn-primary">Agregar</button>
+      <button id="btn-current" class="btn">Actual</button>
+      <div class="flex-fill"></div>
+      <button id="btn-save" class="btn btn-success">
+        <i class="fa fa-save"></i>
+        Guardar
+      </button>
+    </div>
 
   </section>
 
