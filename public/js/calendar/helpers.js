@@ -37,6 +37,21 @@ export async function getRecords(startDate, endDate) {
   ];
 }
 
+export async function saveRecords(records) {
+  console.log(records);
+  // const resp = await fetch("/records", {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify(records),
+  // });
+
+  // const data = await resp.json();
+
+  // return data;
+}
+
 export async function getAllProjects() {
 
   const resp = await fetch("/projects");

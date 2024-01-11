@@ -6,6 +6,7 @@ import {
   getPrevDays,
   getRecords,
   isEqualDate,
+  saveRecords,
 } from './helpers.js';
 
 export class Table {
@@ -75,7 +76,25 @@ export class Table {
   }
 
   save() {
-    console.log(this.data);
+
+    const dataToSave = []
+
+    this.data.forEach((row) => {
+      row.forEach((cell) => {
+
+        if (!cell.project_id || !cell.hours) return;
+
+        dataToSave.push({
+          id: cell.id,
+          project_id: cell.project_id,
+          hours: cell.hours,
+          date: cell.date,
+        });
+
+      });
+    });
+
+    saveRecords(dataToSave);
   }
 
   onChange() {}
@@ -99,6 +118,8 @@ export class Table {
     `;
 
     // data
+
+    console.log(this.data);
 
     this.data.forEach((row, rowIdx) => {
       let tr = document.createElement('tr');
@@ -167,7 +188,7 @@ export class Table {
           const row = e.target.dataset.row;
           const col = e.target.dataset.col;
 
-          this.data[row][col].projectId = value;
+          this.data[row][col].project_id = value;
 
           console.log(this.data);
         });
