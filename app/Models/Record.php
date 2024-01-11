@@ -12,7 +12,12 @@ class Record extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = [
+        "date",
+        "project_id",
+        "hours",
+        "row"
+    ];
 
     // Dates
     protected $useTimestamps = false;

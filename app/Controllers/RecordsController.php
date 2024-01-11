@@ -17,7 +17,7 @@ class RecordsController extends BaseController
     $endDate = $this->request->getGet('endDate');
 
 
-    if(!$startDate || !$endDate){
+    if (!$startDate || !$endDate) {
       return $this->response->setJSON(json_encode(array(
         'error' => 'startDate and endDate are required'
       )));
@@ -25,6 +25,36 @@ class RecordsController extends BaseController
 
     $record = new Record();
     $data = $record->getRecords($startDate, $endDate);
+
+    return $this->response->setJSON(json_encode($data));
+  }
+
+  public function store()
+  {
+
+    // obtener array de data
+    $data = $this->request->getJSON(true);
+
+    // recorrer array de data
+    foreach ($data as $record) {
+
+      // si el id existe, actualizar o eliminar
+      if (isset($record['id']) && $record['id']) {
+
+        // si project_id es 0, eliminar
+        if (isset($record['project_id']) && $record['project_id'] == 0) {
+          $recordModel = new Record();
+          $recordModel->delete($record['id']);
+        } else {
+          $recordModel = new Record();
+          $recordModel->update($record['id'], $record);
+        }
+      } else {
+        // si no existe, crear
+        $recordModel = new Record();
+        $recordModel->insert($record);
+      }
+    }
 
     return $this->response->setJSON(json_encode($data));
   }

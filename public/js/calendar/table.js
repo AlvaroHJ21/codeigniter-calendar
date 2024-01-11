@@ -29,6 +29,8 @@ export class Table {
 
     const records = await getRecords(this.dates[0], this.dates[this.dates.length - 1]);
 
+    console.log(records);
+
     this.data = [];
 
     const nRow = records.reduce((max, record) => {
@@ -82,13 +84,18 @@ export class Table {
     this.data.forEach((row) => {
       row.forEach((cell) => {
 
-        if (!cell.project_id || !cell.hours) return;
+        //validar si el objeto tiene el campo project_id
+
+        if (!cell.hasOwnProperty('project_id')) return;
+
+        // if (!cell.project_id || !cell.hours) return;
 
         dataToSave.push({
           id: cell.id,
           project_id: cell.project_id,
           hours: cell.hours,
           date: cell.date,
+          row: cell.row,
         });
 
       });
@@ -118,8 +125,6 @@ export class Table {
     `;
 
     // data
-
-    console.log(this.data);
 
     this.data.forEach((row, rowIdx) => {
       let tr = document.createElement('tr');
@@ -178,7 +183,7 @@ export class Table {
 
           this.data[row][col].hours = value;
 
-          console.log(this.data);
+          // console.log(this.data);
         });
       });
 

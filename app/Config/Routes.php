@@ -11,4 +11,6 @@ $routes->get("/calendar", "CalendarController::index");
 
 
 $routes->get("/records", "RecordsController::index");
+$routes->post("/records", "RecordsController::store");
+
 $routes->get("/projects", "ProjectsController::index");
