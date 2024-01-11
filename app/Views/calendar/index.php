@@ -55,7 +55,7 @@
 
   </section>
 
-  <script src="js/calendar/index.js" type="module"></script>
+  <script src="js/timetable/index.js" type="module"></script>
 </body>
 
 </html>

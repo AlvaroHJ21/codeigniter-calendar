@@ -1,4 +1,4 @@
-import { Table } from './table.js';
+import { TimeTable } from './timetable.js';
 
 $(document).ready(function () {
 
@@ -8,7 +8,7 @@ $(document).ready(function () {
   const btnPrev = $('#btn-prev');
   const btnCurrent = $('#btn-current');
 
-  const table = new Table('#table-records');
+  const table = new TimeTable('#table-records');
 
   table.loadData();
 

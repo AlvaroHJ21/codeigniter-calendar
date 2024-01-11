@@ -52,7 +52,7 @@ export class Autocomplete {
     input.addEventListener('keyup', (e) => {
       const value = e.target.value;
 
-      if (value.length < 2) {
+      if (value.length < 1) {
         this.results = [];
         this.renderResults(dropdownBody);
         dropdown.style.display = 'none';

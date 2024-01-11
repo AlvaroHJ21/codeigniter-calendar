@@ -9,9 +9,9 @@ import {
 } from './helpers.js';
 
 import { getAllProjects, getRecords, saveRecords } from './api.js';
-import { Autocomplete } from '../autocomplete/autocomplete.js';
+import { Autocomplete } from './autocomplete.js';
 
-export class Table {
+export class TimeTable {
   target = null;
   data = [];
   dates = [];
@@ -31,6 +31,9 @@ export class Table {
     });
   }
 
+  /**
+   * Cargar los datos de la semana que inicia en startDate
+   */
   async loadData() {
     const records = await getRecords(this.startDate);
 
@@ -64,6 +67,9 @@ export class Table {
     this.render();
   }
 
+  /**
+   * Cargar las fechas de la semana siguiente
+   */
   loadNext() {
     const lastCurrentDay = new Date(this.dates[this.dates.length - 1]);
     const nextFirstDay = lastCurrentDay.setDate(lastCurrentDay.getDate() + 1);
@@ -73,6 +79,9 @@ export class Table {
     this.loadData();
   }
 
+  /**
+   * Cargar las fechas de la semana anterior
+   */
   loadPrev() {
     const firstCurrentDay = new Date(this.dates[0]);
     const prevFirstDay = firstCurrentDay.setDate(firstCurrentDay.getDate() - 7);
@@ -82,11 +91,17 @@ export class Table {
     this.loadData();
   }
 
+  /**
+   * Agregar una fila al final de la tabla
+   */
   addRow() {
     this.data.push(this.dates.map((_) => ({})));
     this.render();
   }
 
+  /**
+   * Guardar los datos de la tabla
+   */
   save() {
     const dataToSave = [];
 
@@ -108,12 +123,18 @@ export class Table {
     saveRecords(dataToSave);
   }
 
+  /**
+   * Cargar las fechas de la semana actual
+   */
   backCurrentWeek() {
     this.startDate = getFirstDayOfCurrentWeek();
     this.dates = getDaysOfWeekByFirstDay(this.startDate);
     this.loadData();
   }
 
+  /**
+   * Calcular los totales por día
+   */
   calcTotals() {
     this.totals = this.dates.map((date) => {
       const total = this.data.reduce((sum, row) => {
@@ -130,36 +151,49 @@ export class Table {
     });
   }
 
+  /**
+   * Renderizar toda la ui
+   */
   render() {
+
+    this.renderSubtitle();
+
+    this.renderHeader();
+
+    this.renderSubheaders();
+
     this.renderData();
 
     this.renderTotals();
 
-    this.renderSubtitle();
-
     this.renderTooltips();
   }
 
-  renderData() {
+  renderHeader(){
     const head = this.target.querySelector('thead');
-    const body = this.target.querySelector('tbody');
-
-    body.innerHTML = '';
 
     // headers
     head.innerHTML = `
       <tr>
         ${this.dates
           .map((date) => {
-            return `<th>${getFormatDateText(date)}</th>`;
+            return `<th class="text-center">${getFormatDateText(date)}</th>`;
           })
           .join('')}
       </tr>
     `;
+  }
+
+  renderData() {
+    const body = this.target.querySelector('tbody');
+
+    body.innerHTML = '';
 
     // body
     this.data.forEach((row, rowIdx) => {
       let tr = document.createElement('tr');
+
+      tr = document.createElement('tr');
       row.forEach((cell, colIdx) => {
         const hours = cell.hours || '';
         const projectId = cell.project_id || 0;
@@ -252,20 +286,6 @@ export class Table {
         autocomplete.render();
       });
     });
-
-    // const autocomplete = new Autocomplete({
-    //   target: '#autocomplete',
-    //   data: this.projects,
-    //   onSelect(selected) {
-    //     console.log(selected);
-    //   },
-    //   onDiselect() {
-    //     console.log('deselect');
-    //   },
-    //   selected: this.projects[0],
-    // });
-
-    // autocomplete.render();
   }
 
   renderTotals() {
@@ -294,8 +314,29 @@ export class Table {
 
   renderTooltips() {
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    [...tooltipTriggerList].map(
-      (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
-    );
+    [...tooltipTriggerList].map((tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl));
+  }
+
+  renderSubheaders() {
+    const body = this.target.querySelector('thead');
+    let tr = document.createElement('tr');
+    tr.className = 'table-light';
+
+    this.dates.forEach((_) => {
+      let td = document.createElement('td');
+      td.innerHTML = `
+      <div class="d-flex" style="font-size: 12px; font-weight:bold">
+        <div>
+          Proyecto
+        </div>
+        <div class="flex-fill"></div>
+        <div>
+          Horas
+        </div>
+      </div>`;
+      tr.appendChild(td);
+    });
+
+    body.appendChild(tr);
   }
 }
