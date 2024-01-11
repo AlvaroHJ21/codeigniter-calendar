@@ -9,6 +9,7 @@ import {
 } from './helpers.js';
 
 import { getAllProjects, getRecords, saveRecords } from './api.js';
+import { Autocomplete } from '../autocomplete/autocomplete.js';
 
 export class Table {
   target = null;
@@ -135,6 +136,8 @@ export class Table {
     this.renderTotals();
 
     this.renderSubtitle();
+
+    this.renderTooltips();
   }
 
   renderData() {
@@ -164,7 +167,7 @@ export class Table {
         let td = document.createElement('td');
         td.innerHTML = `
          <div class="d-flex gap-1">
-          <div class="">
+          <div id="autocomplete-${rowIdx}${colIdx}" class="">
             <select 
               class="form-control" 
               style="min-width:160px" 
@@ -223,7 +226,46 @@ export class Table {
           this.data[row][col].project_id = value;
         });
       });
+
+      this.renderAutocompletes();
     });
+  }
+
+  renderAutocompletes() {
+    const dataRef = this.data;
+    this.data.forEach((row, rowIdx) => {
+      row.forEach((cell, colIdx) => {
+        const project = this.projects.find((project) => project.id == cell.project_id);
+
+        const autocomplete = new Autocomplete({
+          target: `#autocomplete-${rowIdx}${colIdx}`,
+          data: this.projects,
+          onSelect(selected) {
+            dataRef[rowIdx][colIdx].project_id = selected.id;
+          },
+          onDiselect() {
+            dataRef[rowIdx][colIdx].project_id = 0;
+          },
+          selected: project,
+        });
+
+        autocomplete.render();
+      });
+    });
+
+    // const autocomplete = new Autocomplete({
+    //   target: '#autocomplete',
+    //   data: this.projects,
+    //   onSelect(selected) {
+    //     console.log(selected);
+    //   },
+    //   onDiselect() {
+    //     console.log('deselect');
+    //   },
+    //   selected: this.projects[0],
+    // });
+
+    // autocomplete.render();
   }
 
   renderTotals() {
@@ -248,5 +290,12 @@ export class Table {
 
     //Semana del 8 al 14 de Enero, 2024
     subtitle.innerHTML = `Semana del ${firstDate.getDate()} al ${lastDate.getDate()} de ${month}, ${lastDate.getFullYear()}`;
+  }
+
+  renderTooltips() {
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    [...tooltipTriggerList].map(
+      (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+    );
   }
 }

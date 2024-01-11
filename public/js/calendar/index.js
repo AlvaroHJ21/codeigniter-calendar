@@ -1,6 +1,7 @@
 import { Table } from './table.js';
 
 $(document).ready(function () {
+
   const btnAddRow = $('#btn-add-row');
   const btnSave = $('#btn-save');
   const btnNext = $('#btn-next');
@@ -30,4 +31,6 @@ $(document).ready(function () {
   btnCurrent.on('click', function () {
     table.backCurrentWeek();
   });
+
+
 });

@@ -13,7 +13,6 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
 
-
 </head>
 
 <body>
@@ -44,7 +43,7 @@
 
     <div class="d-flex mt-2 gap-2">
       <button id="btn-add-row" class="btn btn-primary">Agregar</button>
-      <button id="btn-current" class="btn">Actual</button>
+      <button id="btn-current" class="btn">Hoy</button>
       <div class="flex-fill"></div>
       <button id="btn-save" class="btn btn-success">
         <i class="fa fa-save"></i>
@@ -52,8 +51,9 @@
       </button>
     </div>
 
-  </section>
+    <!-- <div id="autocomplete" class="mt-4"></div> -->
 
+  </section>
 
   <script src="js/calendar/index.js" type="module"></script>
 </body>
