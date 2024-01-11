@@ -1,116 +1,4 @@
-export async function getRecords(startDate, endDate) {
-  const resp = await fetch(`/records?startDate=${startDate}&endDate=${endDate}`);
-  const data = await resp.json();
-
-  return data;
-
-  return [
-    {
-      id: '1',
-      project_id: '1',
-      hours: '8',
-      date: '2024-01-08 15:00:00',
-      row: '0',
-    },
-    {
-      id: '2',
-      project_id: '1',
-      hours: '4.4',
-      date: '2024-01-08 00:00:00',
-      row: '1',
-    },
-    {
-      id: '3',
-      project_id: '1',
-      hours: '2.2',
-      date: '2024-01-10 00:00:00',
-      row: '1',
-    },
-    {
-      id: '4',
-      project_id: '1',
-      hours: '2.2',
-      date: '2024-01-16 00:00:00',
-      row: '0',
-    },
-  ];
-}
-
-export async function saveRecords(records) {
-  console.log(records);
-
-  const resp = await fetch('/records', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(records),
-  });
-
-  await resp.json();
-}
-
-export async function getAllProjects() {
-  const resp = await fetch('/projects');
-  const data = await resp.json();
-
-  return data;
-
-  return [
-    {
-      id: 1,
-      code: 'P1',
-      name: 'Proyecto 1',
-    },
-    {
-      id: 2,
-      code: 'P2',
-      name: 'Proyecto 2',
-    },
-  ];
-}
-
-export function getNextDays(endDate) {
-  const lastDate = new Date(endDate);
-
-  const dates = [];
-
-  for (let i = 0; i < 7; i++) {
-    const newDate = new Date(lastDate);
-
-    newDate.setDate(lastDate.getDate() + i + 1);
-    // Formatear la fecha en el formato deseado
-    const formatedDate = `${newDate.getFullYear()}-${(newDate.getMonth() + 1)
-      .toString()
-      .padStart(2, '0')}-${newDate.getDate().toString().padStart(2, '0')} 00:00:00`;
-
-    dates.push(formatedDate);
-  }
-
-  return dates;
-}
-
-export function getPrevDays(startDate) {
-  const firstDate = new Date(startDate);
-
-  const dates = [];
-
-  for (let i = 0; i < 7; i++) {
-    const newDate = new Date(firstDate);
-
-    newDate.setDate(firstDate.getDate() - i - 1);
-    // Formatear la fecha en el formato deseado
-    const formatedDate = `${newDate.getFullYear()}-${(newDate.getMonth() + 1)
-      .toString()
-      .padStart(2, '0')}-${newDate.getDate().toString().padStart(2, '0')} 00:00:00`;
-
-    dates.unshift(formatedDate);
-  }
-
-  return dates;
-}
-
-export function getDaysOfCurrentWeek() {
+export function getFirstDayOfCurrentWeek() {
   const today = new Date();
 
   const day = today.getDay();
@@ -119,16 +7,30 @@ export function getDaysOfCurrentWeek() {
 
   firstDay.setDate(today.getDate() - day);
 
+  // Formatear la fecha en el formato deseado
+  const formatedDate = firstDay.toISOString().split('T')[0] + ' 00:00:00';
+
+  return formatedDate;
+}
+
+export function getLastDayOfWeekByFirstDay(firstDay) {
+  const date = new Date(firstDay);
+  date.setDate(date.getDate() + 6);
+  const endDate = date.toISOString().split('T')[0] + ' 00:00:00';
+  return endDate;
+}
+
+export function getDaysOfWeekByFirstDay(firstDay) {
+  const firstDate = new Date(firstDay);
+
   const dates = [];
 
   for (let i = 0; i < 7; i++) {
-    const newDate = new Date(firstDay);
+    const newDate = new Date(firstDate);
 
-    newDate.setDate(firstDay.getDate() + i);
+    newDate.setDate(firstDate.getDate() + i);
     // Formatear la fecha en el formato deseado
-    const formatedDate = `${newDate.getFullYear()}-${(newDate.getMonth() + 1)
-      .toString()
-      .padStart(2, '0')}-${newDate.getDate().toString().padStart(2, '0')} 00:00:00`;
+    const formatedDate = newDate.toISOString().split('T')[0] + ' 00:00:00';
 
     dates.push(formatedDate);
   }
@@ -136,7 +38,7 @@ export function getDaysOfCurrentWeek() {
   return dates;
 }
 
-export function getFormatDate(date) {
+export function getFormatDateText(date) {
   // Crear un objeto de fecha
   const newDate = new Date(date);
 
@@ -188,4 +90,17 @@ export function isEqualDate(date1, date2) {
     d1.getMonth() == d2.getMonth() &&
     d1.getDate() == d2.getDate()
   );
+}
+
+export function getFirstDate() {
+  const startDate = localStorage.getItem('startDate');
+  if (startDate) {
+    return startDate;
+  } else {
+    return getFirstDayOfCurrentWeek();
+  }
+}
+
+export function saveFirstDate(firstDate) {
+  localStorage.setItem('startDate', firstDate);
 }

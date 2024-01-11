@@ -1,24 +1,27 @@
 import {
-  getAllProjects,
-  getDaysOfCurrentWeek,
-  getFormatDate,
-  getNextDays,
-  getPrevDays,
-  getRecords,
+  getDaysOfWeekByFirstDay,
+  getFirstDate,
+  getFormatDateText,
   isEqualDate,
-  saveRecords,
+  saveFirstDate,
 } from './helpers.js';
+
+import { getAllProjects, getRecords, saveRecords } from './api.js';
 
 export class Table {
   target = null;
   data = [];
   dates = [];
-  year = 2024;
-  week = 1;
+  totals = [];
+
+  startDate = null;
 
   constructor(target) {
     this.target = document.querySelector(target);
-    this.dates = getDaysOfCurrentWeek();
+
+    this.startDate = getFirstDate();
+
+    this.dates = getDaysOfWeekByFirstDay(this.startDate);
 
     getAllProjects().then((projects) => {
       this.projects = projects;
@@ -26,10 +29,9 @@ export class Table {
   }
 
   async load() {
+    const records = await getRecords(this.startDate);
 
-    const records = await getRecords(this.dates[0], this.dates[this.dates.length - 1]);
-
-    console.log(records);
+    saveFirstDate(this.startDate);
 
     this.data = [];
 
@@ -45,15 +47,16 @@ export class Table {
     });
 
     records.forEach((record) => {
-
       const col = this.dates.findIndex((date) => isEqualDate(date, record.date));
-      
+
       if (col == -1) return;
 
       const row = Number(record.row);
 
       this.data[row][col] = record;
     });
+
+    this.calcTotals();
 
     this.render();
   }
@@ -63,12 +66,20 @@ export class Table {
   }
 
   loadNext() {
-    this.dates = getNextDays(this.dates[this.dates.length - 1]);
+    const lastCurrentDay = new Date(this.dates[this.dates.length - 1]);
+    const nextFirstDay = lastCurrentDay.setDate(lastCurrentDay.getDate() + 1);
+
+    this.dates = getDaysOfWeekByFirstDay(nextFirstDay);
+    this.startDate = this.dates[0];
     this.load();
   }
 
   loadPrev() {
-    this.dates = getPrevDays(this.dates[0]);
+    const firstCurrentDay = new Date(this.dates[0]);
+    const prevFirstDay = firstCurrentDay.setDate(firstCurrentDay.getDate() - 7);
+
+    this.dates = getDaysOfWeekByFirstDay(prevFirstDay);
+    this.startDate = this.dates[0];
     this.load();
   }
 
@@ -78,12 +89,10 @@ export class Table {
   }
 
   save() {
-
-    const dataToSave = []
+    const dataToSave = [];
 
     this.data.forEach((row) => {
       row.forEach((cell) => {
-
         //validar si el objeto tiene el campo project_id
 
         if (!cell.hasOwnProperty('project_id')) return;
@@ -97,7 +106,6 @@ export class Table {
           date: cell.date,
           row: cell.row,
         });
-
       });
     });
 
@@ -105,6 +113,24 @@ export class Table {
   }
 
   onChange() {}
+
+  calcTotals() {
+    this.totals = this.dates.map((date) => {
+      const total = this.data.reduce((sum, row) => {
+        const col = row.findIndex((cell) => isEqualDate(cell.date, date));
+
+        if (col == -1) return sum;
+
+        const hours = Number(row[col].hours);
+
+        return sum + hours;
+      }, 0);
+
+      return total;
+    });
+
+    console.log(this.totals);
+  }
 
   render() {
     const head = this.target.querySelector('thead');
@@ -118,7 +144,7 @@ export class Table {
       <tr>
         ${this.dates
           .map((date) => {
-            return `<th>${getFormatDate(date)}</th>`;
+            return `<th>${getFormatDateText(date)}</th>`;
           })
           .join('')}
       </tr>
@@ -156,7 +182,7 @@ export class Table {
           <div class="">
             <input 
               class="form-control col-4" 
-              style="min-width:60px" 
+              style="min-width:80px" 
               type="number" 
               value="${hours}" 
               data-col="${colIdx}" 
@@ -199,5 +225,17 @@ export class Table {
         });
       });
     });
+
+    // totals
+
+    let tr = document.createElement('tr');
+    tr.innerHTML = `
+      ${this.totals
+        .map((total) => {
+          return `<td class="text-end">${total} Horas</td>`;
+        })
+        .join('')}
+    `;
+    body.appendChild(tr);
   }
 }
