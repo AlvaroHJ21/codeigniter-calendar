@@ -48,6 +48,7 @@ class Record extends Model
         $builder = $this->db->table('records');
         // $builder->select('records.*, users.name as user_name');
         // $builder->join('users', 'users.id = records.user_id');
+        // $builder->where('user_id', $userId);
         $builder->where('date >=', $startDate);
         $builder->where('date <=', $endDate);
         $builder->orderBy('date', 'ASC');

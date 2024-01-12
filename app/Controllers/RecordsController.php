@@ -23,6 +23,9 @@ class RecordsController extends BaseController
       )));
     }
 
+    // $userId = $this->request->getGet('userId');
+    // $userId = session('id');
+
     $record = new Record();
     $data = $record->getRecords($startDate, $endDate);
 
@@ -52,6 +55,7 @@ class RecordsController extends BaseController
       } else {
         // si no existe, crear
         $recordModel = new Record();
+        //TODO: add user_id
         $recordModel->insert($record);
       }
     }

@@ -41,12 +41,14 @@ export class TimeTable {
 
     this.data = [];
 
-    const nRow = records.reduce((max, record) => {
+    let nRow = records.reduce((max, record) => {
       const include = this.dates.some((date) => isEqualDate(date, record.date));
       const row = Number(record.row);
 
       return Math.max(max, include ? row + 1 : 0);
     }, 0);
+
+    nRow = nRow < 10 ? 10 : nRow;
 
     Array.from({ length: nRow }).forEach((_) => {
       this.data.push(this.dates.map((_) => ({})));
