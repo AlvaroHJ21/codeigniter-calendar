@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class Record extends Model
 {
-    protected $table            = 'records';
+    protected $table            = 'registro';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
@@ -16,7 +16,8 @@ class Record extends Model
         "date",
         "project_id",
         "hours",
-        "row"
+        "row",
+        "user_id"
     ];
 
     // Dates
@@ -43,12 +44,12 @@ class Record extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function getRecords($startDate, $endDate)
+    public function getRecords($startDate, $endDate, $userId)
     {
-        $builder = $this->db->table('records');
+        $builder = $this->db->table('registro');
         // $builder->select('records.*, users.name as user_name');
         // $builder->join('users', 'users.id = records.user_id');
-        // $builder->where('user_id', $userId);
+        $builder->where('user_id', $userId);
         $builder->where('date >=', $startDate);
         $builder->where('date <=', $endDate);
         $builder->orderBy('date', 'ASC');

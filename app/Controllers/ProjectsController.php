@@ -12,7 +12,18 @@ class ProjectsController extends BaseController
   {
 
     $project = new Project();
-    $data = $project->findAll();
+    $projects = $project->findAll();
+    $data = [];
+
+    foreach ($projects as $project) {
+      $data[] = [
+        'id' => $project['id'],
+        'name' => $project['Nom_Proyecto'],
+        'code' => $project['id_formato'],
+      ];
+    }
+
+
 
     return $this->response->setJSON(json_encode($data));
   }

@@ -6,7 +6,8 @@ use CodeIgniter\Model;
 
 class Project extends Model
 {
-    protected $table            = 'projects';
+    // protected $table            = 'projects';
+    protected $table            = 'proyecto';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';

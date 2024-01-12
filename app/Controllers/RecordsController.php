@@ -9,6 +9,8 @@ use DateTime;
 class RecordsController extends BaseController
 {
 
+  public $userId = 1;
+
   public function index()
   {
     //obtener query params
@@ -24,10 +26,12 @@ class RecordsController extends BaseController
     }
 
     // $userId = $this->request->getGet('userId');
+    //TODO: get user id from session
     // $userId = session('id');
-
+    $userId = $this->userId;
+    
     $record = new Record();
-    $data = $record->getRecords($startDate, $endDate);
+    $data = $record->getRecords($startDate, $endDate, $userId);
 
     return $this->response->setJSON(json_encode($data));
   }
@@ -56,6 +60,7 @@ class RecordsController extends BaseController
         // si no existe, crear
         $recordModel = new Record();
         //TODO: add user_id
+        $record['user_id'] = $this->userId;
         $recordModel->insert($record);
       }
     }
