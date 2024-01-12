@@ -1,14 +1,27 @@
-export function getFirstDayOfCurrentWeek() {
+export function formatDate(date) {
+  let formatedDate = '';
+  formatedDate += date.getFullYear();
+  formatedDate += '-';
+  formatedDate += ('0' + (date.getMonth() + 1)).slice(-2);
+  formatedDate += '-';
+  formatedDate += ('0' + date.getDate()).slice(-2);
+  formatedDate += ' 00:00:00';
+  return formatedDate;
+}
+
+export function getMondayOfCurrentWeek() {
   const today = new Date();
 
   const day = today.getDay();
 
-  const firstDay = new Date(today.setDate(today.getDate() + 1));
+  const monday = new Date(today.setDate(today.getDate() + 1));
 
-  firstDay.setDate(today.getDate() - day);
+  monday.setDate(today.getDate() - day);
 
   // Formatear la fecha en el formato deseado
-  const formatedDate = firstDay.toISOString().split('T')[0] + ' 00:00:00';
+  const formatedDate = formatDate(monday);
+
+  console.log(formatedDate);
 
   return formatedDate;
 }
@@ -16,7 +29,7 @@ export function getFirstDayOfCurrentWeek() {
 export function getLastDayOfWeekByFirstDay(firstDay) {
   const date = new Date(firstDay);
   date.setDate(date.getDate() + 6);
-  const endDate = date.toISOString().split('T')[0] + ' 00:00:00';
+  const endDate = formatDate(date);
   return endDate;
 }
 
@@ -30,7 +43,7 @@ export function getDaysOfWeekByFirstDay(firstDay) {
 
     newDate.setDate(firstDate.getDate() + i);
     // Formatear la fecha en el formato deseado
-    const formatedDate = newDate.toISOString().split('T')[0] + ' 00:00:00';
+    const formatedDate = formatDate(newDate);
 
     dates.push(formatedDate);
   }
@@ -122,7 +135,7 @@ export function getFirstDate() {
   if (startDate) {
     return startDate;
   } else {
-    return getFirstDayOfCurrentWeek();
+    return getMondayOfCurrentWeek();
   }
 }
 

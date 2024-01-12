@@ -29,11 +29,11 @@ export class Autocomplete {
               type="text" 
               class="form-control" 
               style="min-width:120px" 
-              value="${this.selected.name}" 
+              value="${this.selected.code}: ${this.selected.name}" 
               disabled
-              data-bs-toggle="tooltip" data-bs-title="${this.selected.name}"
+              data-bs-toggle="tooltip" data-bs-title="${this.selected.code}: ${this.selected.name}"
             >
-            <button class="btn btn-danger btn-sm"><i class="fa fa-minus"></i></button>
+            <button class="btn btn-outline-danger btn-sm"><i class="fa fa-minus"></i></button>
           </div>`
           : `<input type="text" class="form-control" placeholder="Buscar..." style="min-width:120px">`
       }
@@ -93,7 +93,7 @@ export class Autocomplete {
       btn.className = 'dropdown-menu-item btn btn-light';
       btn.style.textAlign = 'left';
 
-      btn.innerHTML = `${result.code}-${result.name}`;
+      btn.innerHTML = `${result.code}: ${result.name}`;
 
       btn.addEventListener('click', () => {
         this.value = result.name;

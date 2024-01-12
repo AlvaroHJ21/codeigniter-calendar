@@ -1,7 +1,7 @@
 import {
   getDaysOfWeekByFirstDay,
   getFirstDate,
-  getFirstDayOfCurrentWeek,
+  getMondayOfCurrentWeek,
   getFormatDateText,
   getMonthName,
   isEqualDate,
@@ -127,7 +127,7 @@ export class TimeTable {
    * Cargar las fechas de la semana actual
    */
   backCurrentWeek() {
-    this.startDate = getFirstDayOfCurrentWeek();
+    this.startDate = getMondayOfCurrentWeek();
     this.dates = getDaysOfWeekByFirstDay(this.startDate);
     this.loadData();
   }
