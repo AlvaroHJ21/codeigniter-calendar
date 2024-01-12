@@ -174,7 +174,7 @@ export class TimeTable {
 
     // headers
     head.innerHTML = `
-      <tr>
+      <tr class="table-light">
         ${this.dates
           .map((date) => {
             return `<th class="text-center">${getFormatDateText(date)}</th>`;
